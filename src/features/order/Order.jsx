@@ -1,6 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-// Test ID: IIDSAT
-
 import { useLoaderData } from "react-router-dom";
 import { getOrder } from "../../services/apiRestaurant";
 import {
@@ -11,7 +8,6 @@ import {
 
 function Order() {
   const order = useLoaderData();
-  // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const {
     id,
     status,
@@ -21,14 +17,13 @@ function Order() {
     estimatedDelivery,
     cart,
   } = order;
+  console.log(id, cart);
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
-  console.log(id);
-  console.log(cart);
+
   return (
     <div>
       <div>
         <h2>Status</h2>
-
         <div>
           {priority && <span>Priority</span>}
           <span>{status} order</span>
@@ -38,7 +33,7 @@ function Order() {
       <div>
         <p>
           {deliveryIn >= 0
-            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
+            ? `Only ${deliveryIn} minutes left 😃`
             : "Order should have arrived"}
         </p>
         <p>(Estimated delivery: {formatDate(estimatedDelivery)})</p>
@@ -52,10 +47,8 @@ function Order() {
     </div>
   );
 }
-
 export async function loader({ params }) {
   const order = await getOrder(params.orderId);
   return order;
 }
-
 export default Order;
