@@ -1,8 +1,9 @@
 import { useState } from "react";
+import fetchAddress from "../user/userSlice";
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EmptyCart from "../cart/EmptyCart";
 import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
 import store from "../../store";
@@ -41,6 +42,7 @@ const fakeCart = [
 function CreateOrder() {
   const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const isSubmitting = navigation.state === "submitting";
   const username = useSelector((state) => state.user.username);
   const formErrors = useActionData();
@@ -49,6 +51,7 @@ function CreateOrder() {
   const totalPrice = TotalCartPrice + priorityPrice;
   const cart = useSelector(getCart);
   if (cart.length === 0) return <EmptyCart />;
+
   return (
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">
@@ -80,7 +83,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Address</label>
           <div className="grow">
             <input
@@ -90,6 +93,17 @@ function CreateOrder() {
               required
             />
           </div>
+          <span className="absolute right-[2px] top-[4px] z-50">
+            <Button
+              type="small"
+              onClick={(e) => {
+                e.preaventDefault();
+                dispatch(fetchAddress());
+              }}
+            >
+              GET POSITION
+            </Button>
+          </span>
         </div>
 
         <div className="mb-12 flex items-center gap-5">
